@@ -5,7 +5,13 @@ describe MethodFound do
     expect(MethodFound::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  it 'matches regex and calls block' do
+    klass = Class.new do
+      include(MethodFound.new(/\Asay_([a-z]+)\Z/) do |method_name, matches, *arguments|
+        "#{matches[1]}!"
+      end)
+    end
+    expect(klass.new.say_hi).to eq("hi!")
+    expect(klass.new.say_bye).to eq("bye!")
   end
 end

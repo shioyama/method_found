@@ -1,5 +1,8 @@
 require "method_found/version"
+require "method_found/interceptor"
 
 module MethodFound
-  # Your code goes here...
+  def self.new(*args, &block)
+    Interceptor.new(*args, &block)
+  end
 end
