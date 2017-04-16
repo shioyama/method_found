@@ -1,5 +1,11 @@
 # MethodFound
 
+[![Gem Version](https://badge.fury.io/rb/method_found.svg)][gem]
+[![Build Status](https://travis-ci.org/shioyama/method_found.svg?branch=master)][travis]
+
+[gem]: https://rubygems.org/gems/method_found
+[travis]: https://travis-ci.org/shioyama/method_found
+
 Intercept `method_missing` and do something useful with it.
 
 ## Installation
