@@ -12,6 +12,12 @@ module MethodFound
       define_method :respond_to_missing? do |method_name, include_private = false|
         (method_name =~ regex) || super(method_name, include_private)
       end
+
+      define_method :inspect do
+        klass = self.class
+        name  = klass.name || klass.inspect
+        "#<#{name}: #{regex.inspect}>"
+      end
     end
   end
 end
