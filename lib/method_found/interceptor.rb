@@ -4,7 +4,6 @@ module MethodFound
 
     def initialize(regex = nil, &intercept_block)
       define_method_missing(regex, &intercept_block) unless regex.nil?
-      define_inspect
     end
 
     def define_method_missing(regex, &intercept_block)
@@ -22,13 +21,10 @@ module MethodFound
       end
     end
 
-    def define_inspect
-      regex = @regex
-      define_method :inspect do
-        klass = self.class
-        name  = klass.name || klass.inspect
-        "#<#{name}: #{regex.inspect}>"
-      end
+    def inspect
+      klass = self.class
+      name  = klass.name || klass.inspect
+      "#<#{name}: #{regex.inspect}>"
     end
   end
 end
