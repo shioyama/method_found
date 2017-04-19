@@ -25,8 +25,8 @@ takes the method name, regex matches, and arguments and does something with it:
 
 ```ruby
 class Foo
-  include(MethodFound.new(/\Asay_([a-z]+)/Z/) do |method_name, matches, *arguments|
-    "#{matches[0]}!"
+  include(MethodFound.new(/\Asay_([a-z]+)\Z/) do |method_name, matches, *arguments|
+    "#{matches[1]}!"
   end)
 end
 
