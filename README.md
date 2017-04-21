@@ -20,22 +20,30 @@ And bundle it.
 
 ## Usage
 
-Include an instance of `MethodFound` with a regex to match and block which
-takes the method name, regex matches, and arguments and does something with it:
+Include an instance of `MethodFound::Builder` with a block defining all
+patterns to match. Identify a pattern with the `intercept` method, like this:
 
 ```ruby
 class Foo
-  include(MethodFound.new(/\Asay_([a-z]+)\Z/) do |method_name, matches, *arguments|
-    "#{matches[1]}!"
-  end)
+  include MethodFound::Builder.new {
+    intercept /\Asay_([a-z]+)\Z/ do |method_name, matches, *arguments|
+      "#{matches[1]}!"
+    end
+  }
 end
+``
 
+Now you can say things:
+
+```ruby
 foo = Foo.new
 foo.say_hello
 #=> "hello!"
 foo.say_bye
 #=> "bye!"
 ```
+
+That's it!
 
 ## License
 
