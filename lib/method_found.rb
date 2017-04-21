@@ -1,3 +1,5 @@
+require "securerandom"
+
 require "method_found/version"
 require "method_found/builder"
 require "method_found/interceptor"
