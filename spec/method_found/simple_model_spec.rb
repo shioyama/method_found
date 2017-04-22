@@ -39,15 +39,21 @@ describe MethodFound::SimpleModel do
       instance = described_class.new(:title)
 
       aggregate_failures do
+        expect(instance.title_changed?).to eq(false)
+        expect(instance.title_changes).to eq([])
+        expect(instance.title_was).to eq(nil)
         instance.title = "foo"
         expect(instance.title_changed?).to eq(false)
         expect(instance.title_changes).to eq(["foo"])
+        expect(instance.title_was).to eq(nil)
         instance.title = "bar"
         expect(instance.title_changed?).to eq(true)
         expect(instance.title_changes).to eq(["bar", "foo"])
+        expect(instance.title_was).to eq("foo")
         instance.title = "bar"
         expect(instance.title_changed?).to eq(true)
         expect(instance.title_changes).to eq(["bar", "foo"])
+        expect(instance.title_was).to eq("foo")
       end
     end
 

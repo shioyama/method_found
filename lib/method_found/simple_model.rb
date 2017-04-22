@@ -21,12 +21,18 @@ module MethodFound
             end
           end
 
-          intercept /\A(reset_(#{attribute_name})|(#{attribute_name})_(changed\?|changes))\Z/ do |method_name, matches|
+          intercept /\A(reset_(#{attribute_name})|(#{attribute_name})_(changed\?|changes|was))\Z/ do |method_name, matches|
             if matches[1] == "reset_#{attribute_name}".freeze
               !!@attributes.delete(matches[2])
             else
               changes = @attributes[matches[3]]
-              matches[4] == "changes".freeze ? changes.reverse : (changes.size > 1)
+              if matches[4] == "changes".freeze
+                changes.reverse
+              elsif matches[4] == "was".freeze
+                changes[-2]
+              else
+                changes.size > 1
+              end
             end
           end
         end
