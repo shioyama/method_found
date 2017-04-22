@@ -21,7 +21,12 @@ module MethodFound
       end
 
       define_method :respond_to_missing? do |method_name, include_private = false|
-        matcher.match(method_name) || super(method_name, include_private)
+        if matches = matcher.match(method_name)
+          method_cacher.(method_name, matches)
+          true
+        else
+          super(method_name, include_private)
+        end
       end
     end
 

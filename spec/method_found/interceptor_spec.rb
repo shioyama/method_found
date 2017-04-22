@@ -31,6 +31,12 @@ describe MethodFound::Interceptor do
       expect(instance.baz_with_foo).to eq("baz_with_foo")
     end
 
+    it "caches method after call to respond_to?" do
+      instance = klass.new
+      expect(instance).to receive(:respond_to_missing?).once.and_call_original
+      2.times { expect(instance.respond_to?(:bar_with_foo)).to eq(true) }
+    end
+
     it "works with block argument" do
       expect(klass.new.bar_with_foo do |block_arg|
         "_and_baz_and_#{block_arg}"
