@@ -9,7 +9,7 @@ module MethodFound
 
       @attribute_builder = builder = Builder.new do
         def define_missing(attribute_name)
-          intercept /\A(#{attribute_name})(=|\?)?\Z/.freeze do |method_name, matches, *arguments|
+          intercept /\A(#{attribute_name})(=|\?)?\Z/.freeze do |_, matches, *arguments|
             name  = matches[1]
             value = @attributes[name].last
 
@@ -21,7 +21,7 @@ module MethodFound
             end
           end
 
-          intercept /\A(reset_(#{attribute_name})|(#{attribute_name})_(changed\?|changes|was))\Z/.freeze do |method_name, matches|
+          intercept /\A(reset_(#{attribute_name})|(#{attribute_name})_(changed\?|changes|was))\Z/.freeze do |_, matches|
             if matches[1] == "reset_#{attribute_name}".freeze
               !!@attributes.delete(matches[2])
             else
@@ -37,7 +37,7 @@ module MethodFound
           end
         end
 
-        intercept /\A(.+)\!\Z/ do |method_name, matches|
+        intercept /\A(.+)\!\Z/ do |_, matches|
           builder.define_missing matches[1]
           singleton_class.include builder
           @attributes[matches[1]].last
