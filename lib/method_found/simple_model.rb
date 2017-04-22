@@ -4,7 +4,7 @@ module MethodFound
   class SimpleModel
     attr_reader :attribute_builder
 
-    def initialize(*attribute_names, dirty: true, bang: true)
+    def initialize(*attribute_names)
       @attributes = Hash.new { |h, k| h[k] = [] }
 
       @attribute_builder = builder = Builder.new do
