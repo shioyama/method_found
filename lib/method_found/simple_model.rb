@@ -26,7 +26,7 @@ module MethodFound
               !!@attributes.delete(matches[2])
             else
               changes = @attributes[matches[3]]
-              matches[4] == "changes" ? changes.reverse : (changes.size > 1)
+              matches[4] == "changes".freeze ? changes.reverse : (changes.size > 1)
             end
           end
         end
