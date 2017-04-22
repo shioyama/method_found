@@ -23,7 +23,6 @@ module MethodFound
       define_method :respond_to_missing? do |method_name, include_private = false|
         if matches = matcher.match(method_name)
           method_cacher.(method_name, matches)
-          true
         else
           super(method_name, include_private)
         end
