@@ -31,7 +31,7 @@ class Foo
     end
   }
 end
-``
+```
 
 Now you can say things:
 
