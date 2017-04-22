@@ -35,6 +35,8 @@ describe MethodFound::Interceptor do
       instance = klass.new
       expect(instance).to receive(:respond_to_missing?).once.and_call_original
       2.times { expect(instance.respond_to?(:bar_with_foo)).to eq(true) }
+      expect(instance).to receive(:respond_to_missing?).once.and_call_original
+      expect(instance.respond_to?(:something_else)).to eq(false)
     end
 
     it "works with block argument" do
