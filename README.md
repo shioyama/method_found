@@ -5,6 +5,7 @@
 
 [gem]: https://rubygems.org/gems/method_found
 [travis]: https://travis-ci.org/shioyama/method_found
+[docs]: http://www.rubydoc.info/gems/method_found
 
 Intercept `method_missing` and do something useful with it.
 
@@ -45,7 +46,11 @@ foo.say_bye
 
 That's it!
 
+## More Information
+
+- [Github repository](https://www.github.com/shioyama/method_found)
+- [API documentation][docs]
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
