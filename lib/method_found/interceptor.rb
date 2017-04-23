@@ -2,12 +2,12 @@ module MethodFound
   class Interceptor < Module
     attr_reader :matcher
 
-    def initialize(regex = nil, &intercept_block)
-      define_method_missing(regex, &intercept_block) unless regex.nil?
+    def initialize(matcher = nil, &intercept_block)
+      define_method_missing(matcher, &intercept_block) unless matcher.nil?
     end
 
-    def define_method_missing(matcher, &intercept_block)
-      @matcher = Matcher.new(matcher)
+    def define_method_missing(matcher_, &intercept_block)
+      @matcher = matcher = Matcher.new(matcher_)
       assign_intercept_method(&intercept_block)
       method_cacher = method(:cache_method)
 
@@ -47,6 +47,22 @@ module MethodFound
     def assign_intercept_method(&intercept_block)
       @intercept_method ||= "__intercept_#{SecureRandom.hex}".freeze.tap do |method_name|
         define_method method_name, &intercept_block
+      end
+    end
+
+    class Matcher < Struct.new(:matcher)
+      def match(method_name)
+        if matcher.is_a?(Regexp)
+          matcher.match(method_name)
+        elsif matcher.respond_to?(:call)
+          matcher.call(method_name) && [method_name.to_s]
+        else
+          (matcher.to_sym == method_name) && [method_name.to_s]
+        end
+      end
+
+      def inspect
+        matcher.inspect
       end
     end
   end
