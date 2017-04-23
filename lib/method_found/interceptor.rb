@@ -7,9 +7,9 @@ module MethodFound
     end
 
     def define_method_missing(matcher, &intercept_block)
-      @matcher = matcher
-      intercept_method = assign_intercept_method(&intercept_block)
-      method_cacher    = method(:cache_method)
+      @matcher = Matcher.new(matcher)
+      assign_intercept_method(&intercept_block)
+      method_cacher = method(:cache_method)
 
       define_method :method_missing do |method_name, *arguments, &method_block|
         if matches = matcher.match(method_name)
