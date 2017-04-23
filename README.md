@@ -27,7 +27,7 @@ patterns to match. Identify a pattern with the `intercept` method, like this:
 ```ruby
 class Foo
   include MethodFound::Builder.new {
-    intercept /\Asay_([a-z]+)\Z/ do |method_name, matches, *arguments|
+    intercept /\Asay_([a-z]+)\Z/ do |method_name, matches, *arguments, &block|
       "#{matches[1]}!"
     end
   }
