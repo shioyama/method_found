@@ -27,7 +27,7 @@ string/symbol.
       method_cacher = method(:cache_method)
 
       define_method :method_missing do |method_name, *arguments, &method_block|
-        if matches = matcher_.match(method_name)
+        if matches = matcher_.match(method_name, context: self)
           method_cacher.(method_name, matches)
           send(method_name, *arguments, &method_block)
         else
@@ -36,7 +36,7 @@ string/symbol.
       end
 
       define_method :respond_to_missing? do |method_name, include_private = false|
-        if matches = matcher_.match(method_name)
+        if matches = matcher_.match(method_name, context: self)
           method_cacher.(method_name, matches)
         else
           super(method_name, include_private)
@@ -67,11 +67,11 @@ string/symbol.
     end
 
     class Matcher < Struct.new(:matcher)
-      def match(method_name)
+      def match(method_name, context:)
         if matcher.is_a?(Regexp)
           matcher.match(method_name)
         elsif matcher.respond_to?(:call)
-          matcher.call(method_name)
+          context.instance_exec(method_name, &matcher)
         else
           (matcher.to_sym == method_name)
         end
