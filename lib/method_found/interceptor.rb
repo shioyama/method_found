@@ -55,7 +55,8 @@ string/symbol.
     def cache_method(method_name, matches)
       intercept_method = @intercept_method
       define_method method_name do |*arguments, &block|
-        send(intercept_method, method_name, matches, *arguments, &block)
+        arguments = [matches, *arguments] unless method(intercept_method).arity == 1
+        send(intercept_method, method_name, *arguments, &block)
       end
     end
 
@@ -70,9 +71,9 @@ string/symbol.
         if matcher.is_a?(Regexp)
           matcher.match(method_name)
         elsif matcher.respond_to?(:call)
-          matcher.call(method_name) && [method_name.to_s]
+          matcher.call(method_name)
         else
-          (matcher.to_sym == method_name) && [method_name.to_s]
+          (matcher.to_sym == method_name)
         end
       end
 

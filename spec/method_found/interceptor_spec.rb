@@ -54,8 +54,8 @@ describe MethodFound::Interceptor do
         Class.new do
           def foo; "foo"; end
 
-          include(MethodFound::Interceptor.new(proc { |name| name == :foobar }) do |_, matches, &block|
-            "#{matches[0]}_with_#{foo}#{block && block.call("foobar")}"
+          include(MethodFound::Interceptor.new(proc { |name| name == :foobar }) do |method_name, &block|
+            "#{method_name}_with_#{foo}#{block && block.call("foobar")}"
           end)
         end
       end
@@ -70,8 +70,8 @@ describe MethodFound::Interceptor do
         Class.new do
           def foo; "foo"; end
 
-          include(MethodFound::Interceptor.new("foobar") do |_, matches, &block|
-            "#{matches[0]}_with_#{foo}#{block && block.call("foobar")}"
+          include(MethodFound::Interceptor.new("foobar") do |method_name, &block|
+            "#{method_name}_with_#{foo}#{block && block.call("foobar")}"
           end)
         end
       end
