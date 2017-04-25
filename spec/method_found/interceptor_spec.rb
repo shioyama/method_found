@@ -52,9 +52,15 @@ describe MethodFound::Interceptor do
     context "proc matcher" do
       let(:klass) do
         Class.new do
+          attr_accessor :check
+
           def foo; "foo"; end
 
-          include(MethodFound::Interceptor.new(proc { |name| name == :foobar }) do |method_name, &block|
+          include(MethodFound::Interceptor.new(proc { |name| (name == :foobar) && self.check == true }) do |method_name, &block|
+            "#{method_name}_fallthrough"
+          end)
+
+          include(MethodFound::Interceptor.new(proc { |name| (name == :foobar) && self.check == nil }) do |method_name, &block|
             "#{method_name}_with_#{foo}#{block && block.call("foobar")}"
           end)
         end
@@ -62,6 +68,16 @@ describe MethodFound::Interceptor do
 
       it "calls intercept block within context of instance" do
         expect(klass.new.foobar).to eq("foobar_with_foo")
+      end
+
+      it "dynamically evaluates proc even after caching method" do
+        instance = klass.new
+        instance.check = true
+        expect(instance.foobar).to eq("foobar_fallthrough")
+        instance.check = nil
+        expect(instance.foobar).to eq("foobar_with_foo")
+        instance.check = true
+        expect(instance.foobar).to eq("foobar_fallthrough")
       end
     end
 
