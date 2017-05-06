@@ -14,7 +14,7 @@ Intercept `method_missing` and do something useful with it.
 Add to your Gemfile:
 
 ```ruby
-gem 'method_found', '~> 0.1.3'
+gem 'method_found', '~> 0.1.4'
 ```
 
 And bundle it.
