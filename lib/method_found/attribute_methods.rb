@@ -45,6 +45,7 @@ module MethodFound
 =end
   module AttributeMethods
     def self.included(base)
+      base.include(AttributeInterceptor.new)
       base.instance_eval do
         def attribute_method_affix(prefix: '', suffix: '')
           include(AttributeInterceptor.new(prefix: prefix, suffix: suffix))
@@ -61,6 +62,12 @@ module MethodFound
         def define_attribute_methods(*attributes)
           ancestors.each do |ancestor|
             ancestor.define_attribute_methods(*attributes) if ancestor.is_a?(AttributeInterceptor)
+          end
+        end
+
+        def alias_attribute(new_name, old_name)
+          ancestors.each do |ancestor|
+            ancestor.alias_attribute(new_name, old_name) if ancestor.is_a?(AttributeInterceptor)
           end
         end
       end

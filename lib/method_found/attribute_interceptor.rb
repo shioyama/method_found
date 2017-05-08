@@ -69,5 +69,12 @@ attribute name or set of attribute names.
         end
       end
     end
+
+    def alias_attribute(new_name, old_name)
+      prefix, suffix = @prefix, @suffix
+      define_method "#{@prefix}#{new_name}#{@suffix}".freeze do |*arguments, &block|
+        send("#{prefix}#{old_name}#{suffix}".freeze, *arguments, &block)
+      end
+    end
   end
 end
