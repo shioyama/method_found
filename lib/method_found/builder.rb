@@ -27,9 +27,9 @@ Creates set of interceptors to include into a class.
 
     # @yield Yields builder as context to block, to allow calling builder
     #   methods to create interceptors in included class.
-    def initialize(&block)
+    def initialize
       @interceptors = []
-      instance_eval &block
+      super
     end
 
     def intercept(*args, &block)
