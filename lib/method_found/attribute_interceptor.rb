@@ -44,37 +44,42 @@ attribute name or set of attribute names.
   class AttributeInterceptor < Interceptor
     def initialize(prefix: '', suffix: '')
       @prefix, @suffix = prefix, suffix
-      regex_ = regex
+      @regex = regex = /\A(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})\z/
+      @method_missing_target = method_missing_target = "#{prefix}attribute#{suffix}"
+      @method_name = "#{prefix}%s#{suffix}"
+
       attribute_matcher = proc do |method_name|
-        (matches = regex_.match(method_name)) && attributes.include?(matches[1]) && matches[1]
+        (matches = regex.match(method_name)) && attributes.include?(matches[1]) && matches[1]
       end
       attribute_matcher.define_singleton_method :inspect do
-        regex_.inspect
+        regex.inspect
       end
 
-      super attribute_matcher do |_, attr_name, *arguments, &block|
-        send("#{prefix}attribute#{suffix}", attr_name, *arguments, &block)
+      super attribute_matcher do |_, attr_name, *args, &block|
+        send(method_missing_target, attr_name, *arguments, &block)
       end
-    end
-
-    def regex
-      /\A(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})\z/.freeze
     end
 
     def define_attribute_methods(*attr_names)
-      prefix, suffix = @prefix, @suffix
+      prefix, suffix, handler = @prefix, @suffix, @method_missing_target
       attr_names.each do |attr_name|
-        define_method "#{@prefix}#{attr_name}#{@suffix}".freeze do |*arguments, &block|
-          send("#{prefix}attribute#{suffix}".freeze, attr_name, *arguments, &block)
+        define_method method_name(attr_name) do |*arguments, &block|
+          send(handler, attr_name, *arguments, &block)
         end
       end
     end
 
     def alias_attribute(new_name, old_name)
-      prefix, suffix = @prefix, @suffix
-      define_method "#{@prefix}#{new_name}#{@suffix}".freeze do |*arguments, &block|
-        send("#{prefix}#{old_name}#{suffix}".freeze, *arguments, &block)
+      prefix, suffix, handler = @prefix, @suffix, method_name(old_name)
+      define_method method_name(new_name) do |*arguments, &block|
+        send(handler, *arguments, &block)
       end
+    end
+
+    private
+
+    def method_name(attr_name)
+      @method_name % attr_name
     end
   end
 end
