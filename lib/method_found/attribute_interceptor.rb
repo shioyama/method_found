@@ -43,8 +43,7 @@ attribute name or set of attribute names.
 =end
   class AttributeInterceptor < Interceptor
     def initialize(prefix: '', suffix: '')
-      @prefix, @suffix = prefix, suffix
-      @regex = /\A(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})\z/
+      @regex = /\A(?:#{Regexp.escape(prefix)})(.*)(?:#{Regexp.escape(suffix)})\z/
       @method_missing_target = method_missing_target = "#{prefix}attribute#{suffix}"
       @method_name = "#{prefix}%s#{suffix}"
 
@@ -54,7 +53,7 @@ attribute name or set of attribute names.
     end
 
     def define_attribute_methods(*attr_names)
-      prefix, suffix, handler = @prefix, @suffix, @method_missing_target
+      handler = @method_missing_target
       attr_names.each do |attr_name|
         define_method method_name(attr_name) do |*arguments, &block|
           send(handler, attr_name, *arguments, &block)
@@ -63,7 +62,7 @@ attribute name or set of attribute names.
     end
 
     def alias_attribute(new_name, old_name)
-      prefix, suffix, handler = @prefix, @suffix, method_name(old_name)
+      handler = method_name(old_name)
       define_method method_name(new_name) do |*arguments, &block|
         send(handler, *arguments, &block)
       end
