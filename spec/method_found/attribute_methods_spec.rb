@@ -49,10 +49,16 @@ describe MethodFound::AttributeMethods do
     end
   end
 
+  describe "#respond_to?" do
+    it "returns false if no attributes method defined" do
+      expect(model_without_attributes.new.respond_to?(:attributes)).to eq(false)
+    end
+  end
+
   describe "#method_missing" do
     context "without attributes" do
       it "correctly raises NoMethodError" do
-        expect { model_without_attributes.new.foo }.to raise_error(NoMethodError)
+        expect { model_without_attributes.new.foo }.to raise_error(NoMethodError, /foo/)
       end
     end
 

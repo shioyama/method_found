@@ -50,9 +50,9 @@ attribute name or set of attribute names.
 
       attribute_matcher = proc do |method_name|
         (matches = regex.match(method_name)) &&
-          methods.include?(:attributes) &&
-          attributes.include?(matches[1]) &&
-          matches[1]
+          (method_name != :attributes) &&
+          respond_to?(:attributes) &&
+          (attributes.keys & matches.captures).first
       end
       attribute_matcher.define_singleton_method :inspect do
         regex.inspect
