@@ -49,14 +49,17 @@ attribute name or set of attribute names.
       @method_name = "#{prefix}%s#{suffix}"
 
       attribute_matcher = proc do |method_name|
-        (matches = regex.match(method_name)) && attributes.include?(matches[1]) && matches[1]
+        (matches = regex.match(method_name)) &&
+          methods.include?(:attributes) &&
+          attributes.include?(matches[1]) &&
+          matches[1]
       end
       attribute_matcher.define_singleton_method :inspect do
         regex.inspect
       end
 
       super attribute_matcher do |_, attr_name, *args, &block|
-        send(method_missing_target, attr_name, *arguments, &block)
+        send(method_missing_target, attr_name, *args, &block)
       end
     end
 

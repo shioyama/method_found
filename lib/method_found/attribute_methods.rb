@@ -47,21 +47,21 @@ module MethodFound
     def self.included(base)
       base.include(AttributeInterceptor.new)
       base.instance_eval do
-        def attribute_method_affix(prefix: '', suffix: '')
-          include(AttributeInterceptor.new(prefix: prefix, suffix: suffix))
+        def attribute_method_prefix(*prefixes)
+          prefixes.map { |prefix| include(AttributeInterceptor.new(prefix: prefix)) }
         end
 
-        def attribute_method_suffix(suffix)
-          include(AttributeInterceptor.new(suffix: suffix))
+        def attribute_method_suffix(*suffixes)
+          suffixes.map { |suffix| include(AttributeInterceptor.new(suffix: suffix)) }
         end
 
-        def attribute_method_prefix(prefix)
-          include(AttributeInterceptor.new(prefix: prefix))
+        def attribute_method_affix(*affixes)
+          affixes.map { |affix| include(AttributeInterceptor.new(prefix: affix[:prefix], suffix: affix[:suffix])) }
         end
 
-        def define_attribute_methods(*attributes)
+        def define_attribute_methods(*attr_names)
           ancestors.each do |ancestor|
-            ancestor.define_attribute_methods(*attributes) if ancestor.is_a?(AttributeInterceptor)
+            ancestor.define_attribute_methods(*attr_names) if ancestor.is_a?(AttributeInterceptor)
           end
         end
 
