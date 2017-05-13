@@ -15,7 +15,7 @@ describe MethodFound::AttributeMethods do
   let(:model_with_attributes) do
     attribute_methods = described_class
     Class.new do
-      def initialize(attrs)
+      def initialize(**attrs)
         @foo = attrs[:foo]
         @bar = attrs[:bar]
       end
@@ -107,6 +107,26 @@ describe MethodFound::AttributeMethods do
         expect(ancestors[2].inspect).to match /(.*)#{"(?:=)"}/
         expect(ancestors[3].inspect).to match /clear_(.*)/
       end
+    end
+  end
+
+  describe ".alias_attribute" do
+    it "aliases attribute to new name" do
+      model_with_attributes.class_eval do
+        alias_attribute :baz, :foo
+      end
+
+      instance = model_with_attributes.new(foo: "fooval")
+      expect(instance.foo).to eq("fooval")
+      expect(instance.baz).to eq("fooval")
+
+      instance.foo = "newval"
+      expect(instance.foo).to eq("newval")
+      expect(instance.baz).to eq("newval")
+
+      instance.clear_foo
+      expect(instance.foo).to eq(nil)
+      expect(instance.baz).to eq(nil)
     end
   end
 end
