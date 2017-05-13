@@ -44,21 +44,11 @@ attribute name or set of attribute names.
   class AttributeInterceptor < Interceptor
     def initialize(prefix: '', suffix: '')
       @prefix, @suffix = prefix, suffix
-      @regex = regex = /\A(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})\z/
+      @regex = /\A(?:#{Regexp.escape(@prefix)})(.*)(?:#{Regexp.escape(@suffix)})\z/
       @method_missing_target = method_missing_target = "#{prefix}attribute#{suffix}"
       @method_name = "#{prefix}%s#{suffix}"
 
-      attribute_matcher = proc do |method_name|
-        (matches = regex.match(method_name)) &&
-          (method_name != :attributes) &&
-          respond_to?(:attributes) &&
-          (attributes.keys & matches.captures).first
-      end
-      attribute_matcher.define_singleton_method :inspect do
-        regex.inspect
-      end
-
-      super attribute_matcher do |_, attr_name, *args, &block|
+      super to_proc do |_, attr_name, *args, &block|
         send(method_missing_target, attr_name, *args, &block)
       end
     end
@@ -77,6 +67,20 @@ attribute name or set of attribute names.
       define_method method_name(new_name) do |*arguments, &block|
         send(handler, *arguments, &block)
       end
+    end
+
+    def to_proc
+      regex = @regex
+      matcher = proc do |method_name|
+        (matches = regex.match(method_name)) &&
+          (method_name != :attributes) &&
+          respond_to?(:attributes) &&
+          (attributes.keys & matches.captures).first
+      end
+      matcher.define_singleton_method :inspect do
+        regex.inspect
+      end
+      matcher
     end
 
     private
