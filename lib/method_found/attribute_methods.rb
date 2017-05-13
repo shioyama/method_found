@@ -48,15 +48,15 @@ module MethodFound
       base.include(AttributeInterceptor.new)
       base.instance_eval do
         def attribute_method_prefix(*prefixes)
-          prefixes.map { |prefix| include(AttributeInterceptor.new(prefix: prefix)) }
+          prefixes.each { |prefix| include AttributeInterceptor.new(prefix: prefix) }
         end
 
         def attribute_method_suffix(*suffixes)
-          suffixes.map { |suffix| include(AttributeInterceptor.new(suffix: suffix)) }
+          suffixes.each { |suffix| include AttributeInterceptor.new(suffix: suffix) }
         end
 
         def attribute_method_affix(*affixes)
-          affixes.map { |affix| include(AttributeInterceptor.new(prefix: affix[:prefix], suffix: affix[:suffix])) }
+          affixes.each { |affix| include AttributeInterceptor.new(prefix: affix[:prefix], suffix: affix[:suffix]) }
         end
 
         def define_attribute_methods(*attr_names)
