@@ -70,16 +70,16 @@ attribute name or set of attribute names.
 
     def to_proc
       regex = @regex
-      matcher = proc do |method_name|
+      proc do |method_name|
         (matches = regex.match(method_name)) &&
           (method_name != :attributes) &&
           respond_to?(:attributes) &&
           (attributes.keys & matches.captures).first
       end
-      matcher.define_singleton_method :inspect do
-        regex.inspect
-      end
-      matcher
+    end
+
+    def inspect
+      "<#{self.class.name}: #{@regex.inspect}>"
     end
 
     private

@@ -109,9 +109,9 @@ describe MethodFound::AttributeMethods do
     it "shows regex matchers for all prefixes, suffixes and affixes" do
       ancestors = model_with_attributes.ancestors
       aggregate_failures do
-        expect(ancestors[1].inspect).to match /reset_(.*)_to_default/
-        expect(ancestors[2].inspect).to match /(.*)#{"(?:=)"}/
-        expect(ancestors[3].inspect).to match /clear_(.*)/
+        expect(ancestors[1].inspect).to match /AttributeInterceptor\:(.*)reset_(.*)_to_default/
+        expect(ancestors[2].inspect).to match /AttributeInterceptor\:(.*)#{"(?:=)"}/
+        expect(ancestors[3].inspect).to match /AttributeInterceptor\:(.*)clear_(.*)/
       end
     end
   end
