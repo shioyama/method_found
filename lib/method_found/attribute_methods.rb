@@ -3,6 +3,9 @@ require "method_found/attribute_interceptor"
 module MethodFound
 =begin
 
+Re-implementation of ActiveModel::AttributeMethods from Rails using
+{MethodFound::Interceptor} modules instead of class variables.
+
 @example
   class Person < Struct.new(:attributes)
     include MethodFound::AttributeMethods
