@@ -1,5 +1,4 @@
 require "spec_helper"
-require "method_found/attribute_methods"
 
 describe MethodFound::AttributeMethods do
   class ModelWithoutAttributesMethod
